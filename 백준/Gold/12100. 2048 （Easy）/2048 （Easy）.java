@@ -1,5 +1,7 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
 
 public class Main {
 	static BufferedReader br;
@@ -48,9 +50,11 @@ public class Main {
 	}
 	
 	static void moveLeft2D() {
+		int[][] moved = new int[N][N];
 		for (int i = 0; i < N; i++) {
-			map[i] = moveLeft1D(map[i]);
+			moved[i] = moveLeft1D(map[i]);
 		}
+		deepCopyMap(moved);
 	}
 	
 	static void move2D(int dir) {
@@ -97,7 +101,6 @@ public class Main {
 				map[i][j] = nextInt();
 			}
 		}
-		
 		
 		maxBlock = 0;
 		dfs(0);
