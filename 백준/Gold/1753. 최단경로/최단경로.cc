@@ -21,18 +21,18 @@ int main(){
     // 로직
     while (pq.size()){
         // 지금 정점 부터 최소거리인 정점부터 탐색
-        int cur_dist = pq.top().first;
-        int cur_node = pq.top().second;
+        int here = pq.top().second;
+        int here_dist = pq.top().first;
         pq.pop();
         // 해당 정점까지의 거리 중 더 짧은 거리를 담는 첫 번째 정점만을 처리한다.
-        if (dist[cur_node] != cur_dist) continue;
-        // "다음 정점의 거리"보다 "현재 정점 + 다음 정점까지의 거리"가 더 작으면 갱신(완화)
-        for (auto there : adj[cur_node]){
-            int nxt_dist = there.first;
-            int nxt_node = there.second;
-            if (dist[nxt_node] > dist[cur_node] + nxt_dist){
-                dist[nxt_node] = dist[cur_node] + nxt_dist;
-                pq.push(make_pair(dist[nxt_node], nxt_node));
+        if (dist[here] != here_dist) continue;
+        // "내가 탐색하려는 정점"보다 "나의 정점 + 그 정점까지의 거리"가 더 작으면 갱신(완화)
+        for (auto there : adj[here]){
+            int _dist = there.first;
+            int _there = there.second;
+            if (dist[_there] > dist[here] + _dist){
+                dist[_there] = dist[here] + _dist;
+                pq.push(make_pair(dist[_there], _there));
             }
         }
     }
