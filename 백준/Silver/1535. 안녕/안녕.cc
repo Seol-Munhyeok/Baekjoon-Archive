@@ -8,10 +8,11 @@ int knapsack(int i, int W){
     if (i <= 0 || W <= 0) return 0;
     int &ret = dp[i][W];
     if (ret != -1) return ret;
-    if (L[i] >= W) return knapsack(i - 1, W);
+    if (L[i] > W) return knapsack(i - 1, W);
     else {
         int not_included = knapsack(i - 1, W);
-        int included = knapsack(i - 1, W - L[i]) + J[i];
+        int included = 0;
+        if (L[i] < W) included = knapsack(i - 1, W - L[i]) + J[i];
         return ret = max(not_included, included);
     }
 }
