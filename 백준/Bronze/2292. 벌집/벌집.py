@@ -1,12 +1,32 @@
-""" 굳이 일반항을 찾는 노력없이 while문을 통해 쉽게 각 방의 최대 주소를 찾을 수 있다. """
+import math
 
-n = int(input())
 
-num_house = 1  # 벌집의 개수
-cnt = 1  # 각 벌집의 최대 주소값
+def count_room(address):
+    """
+    방의 주소 address가 주어질 때 최소의 방의 개수 n을 구하는 함수이다.
 
-while n > cnt:
-    cnt = cnt + 6 * num_house  # 벌집의 최대 주소값을 증가시킴
-    num_house += 1
+    이를 구하기 위해 먼저
+    방의 개수 n이 주어질 때 그 방의 최대 주소값을 구하는 일반항
+    f(n) = 3n^2 - 3n + 1
+     을 앞서 구하였다.
 
-print(num_house)
+     이를 이용하여 f(n) = 3n^2 - 3n + 1 >= address를 만족하는
+     n의 최솟값을 구하면 된다.
+
+     n^2 - n >= (address - 1) / 3
+     이고 n>=0 이므로
+
+     n^2 >= n^2 - n >= (address - 1) / 3
+     n >= sqrt((address - 1) / 3)
+
+     여기서 n은 정수이므로 반올림한다.
+     또 처음 벌집도 세어줘야하므로 1을 더한다.
+    """
+
+    return round(math.sqrt((address - 1) / 3)) + 1
+
+
+address = int(input())
+print(count_room(address))
+
+# 질문 게시판의 내용을 참고하였음
