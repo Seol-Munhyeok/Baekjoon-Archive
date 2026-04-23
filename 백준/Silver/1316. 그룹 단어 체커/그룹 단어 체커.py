@@ -1,22 +1,20 @@
-def check(str):
-    dic = dict()
-    i, j = 0, 0
-    while j < len(str):
-        if str[i] in dic:
-            return False
-        dic[str[i]] = 1
-        while j < len(str) and str[i] == str[j]:
-            j += 1
-        i = j
-
-    return True
+import sys
 
 
-n = int(input())
-answer = 0
-for _ in range(n):
-    str = input()
-    if check(str):
-        answer += 1
+def is_group_word(word):
+    letter_lst = list(set(word))
+    for letter in letter_lst:
+        tmp = word.count(letter)
+        if letter * tmp not in word:
+            return 0
+    return 1
 
-print(answer)
+
+n = int(sys.stdin.readline())
+res = 0
+
+for i in range(n):
+    word = sys.stdin.readline()
+    res += is_group_word(word)
+
+print(res)
