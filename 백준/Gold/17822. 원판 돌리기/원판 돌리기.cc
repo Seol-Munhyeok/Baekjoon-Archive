@@ -37,7 +37,9 @@ bool findAdj(){
 
 void _rotate(int y, int d, int k){
     vector<int> v;
-    for (int i = 0; i < M; i++) v.push_back(a[y][i]);
+    for (int i = 0; i < M; i++){
+        v.push_back(a[y][i]);
+    }
     if (d == 0) rotate(v.begin(), v.begin() + M - k, v.end());
     else if (d == 1) rotate(v.begin(), v.begin() + k, v.end());
     for (int i = 0; i < M; i++) a[y][i] = v[i];
@@ -58,8 +60,8 @@ void setAverage(){
     avg = (double) sum / (double) cnt;
     for (int i = 0; i < N; i++){
         for (int j = 0; j < M; j++){
-            if (a[i][j] && a[i][j] > avg) a[i][j]--;
-            else if (a[i][j] && a[i][j] < avg) a[i][j]++;
+            if (a[i][j] > 0 && a[i][j] > avg) a[i][j]--;
+            else if (a[i][j] > 0 && a[i][j] < avg) a[i][j]++;
         }
     }
 }
