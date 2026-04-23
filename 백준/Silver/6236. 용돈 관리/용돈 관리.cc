@@ -2,7 +2,7 @@
 using namespace std;
 using ll = long long;
 
-ll N, M, mx, sum, lo, hi, ret, a[100004];
+ll N, M, mx, sum, lo, hi, ret = 1e18, a[100004];
 
 bool check(ll mid){
     if (mx > mid) return false;
