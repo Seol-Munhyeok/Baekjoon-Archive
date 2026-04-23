@@ -1,48 +1,33 @@
 def solution(r, c, d, grid):
     dirs = [(-1, 0), (0, 1), (1, 0), (0, -1)]
-
+    answer = 0
     y, x, cur_dir = r, c, d
-    cleaned = 0
-
     while True:
-        # 현재 칸 청소
+        # 현재 칸이 아직 청소되지 않은 경우(0), 현재 칸을 청소(2)한다.
         if grid[y][x] == 0:
             grid[y][x] = 2
-            cleaned += 1
-        
-        moved = False
-
-        # 왼쪽부터 4방향 검사
-        for _ in range(4):
-            left = (cur_dir + 3) % 4
-            dy, dx = dirs[left]
+            answer += 1
+        # 현재 칸의 주변 4칸 중 청소되지 않은 빈 칸(0)이 있는 경우
+        if any(grid[y + dy][x + dx] == 0 for dy, dx in dirs):
+            for _ in range(4):
+                cur_dir = (cur_dir + 3) % 4  # 반시계 90도 회전
+                dy, dx = dirs[cur_dir]
+                ny, nx = y + dy, x + dx
+                if grid[ny][nx] == 0:
+                    y, x = ny, nx
+                    break
+        # 현재 칸의 주변 4칸 중 청소되지 않은 빈 칸(0)이 없는 경우,
+        else:
+            cur_dir = (cur_dir + 2) % 4  # 후진 방향
+            dy, dx = dirs[cur_dir]
             ny, nx = y + dy, x + dx
-
-            if grid[ny][nx] == 0:
-                # 왼쪽이 미청소면 회전 + 전진
-                cur_dir = left
+            # 벽이 아니라서 후진할 수 있는 경우
+            if grid[ny][nx] != 1:
                 y, x = ny, nx
-                moved = True
-                break
+                cur_dir = (cur_dir + 2) % 4  # 방향은 다시 되돌림
             else:
-                # 왼쪽이 아니면
-                cur_dir = left
-        
-        if moved:
-            continue
+                return answer
 
-        # 4 방향 모두 불가 -> 뒤로 한 칸 (방향은 유지)
-        back = (cur_dir + 2) % 4
-        dy, dx = dirs[back]
-        ny, nx = y + dy, x + dx
-
-        # 뒤가 벽이면 종료
-        if grid[ny][nx] == 1:
-            return cleaned
-        
-        # 뒤로 이동 (바라보는 방향 cur는 그대로 유지)
-        y, x = ny, nx
-        
 
 # 입력 처리
 n, m = map(int, input().split())
