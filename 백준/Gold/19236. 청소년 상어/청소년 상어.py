@@ -53,7 +53,7 @@ def dfs(sy, sx, score, board):
     
     # 상어 먹음
     s_dir = board[sy][sx][1]
-    for i in range(1, 4):
+    for i in range(1, 5):
         ny, nx = sy + dy[s_dir] * i, sx + dx[s_dir] * i
         # 범위 안에 있고 물고기가 있는 위치일 때
         if in_range(ny, nx) and board[ny][nx][0] > 0:
