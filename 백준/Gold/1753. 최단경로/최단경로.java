@@ -5,7 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
-
+/*
+ * 메모리 : 
+ * 시간 : 
+ */
 public class Main {
 	static BufferedReader br;
 	static StringTokenizer st;
@@ -22,38 +25,36 @@ public class Main {
 		return Integer.parseInt(next());
 	}
 	
-	static class Edge {
-		int to, cost;
-		Edge(int to, int cost) {
-			this.to = to;
-			this.cost = cost;
-		}
-	}
+	static final long INF = Long.MAX_VALUE / 4;
+	static int V, E, K;
+	static List<int[]>[] adj;  // {v, w}
+	static long[] minDist;
+	static boolean[] visited;
 	
-	static final int INF = 2_000_000_000;
-	static int V, E;
-	static int K;  // 시작점
-	static int[] minDist;
-	static List<Edge>[] adj;
-	
-	static void dijkstra() {
-		minDist = new int[V + 1];
+	static void dijkstra(int start) {
+		minDist = new long[V + 1];
 		Arrays.fill(minDist, INF);
-		minDist[K] = 0;
+		minDist[start] = 0;
 		
-		PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> Integer.compare(a[1], b[1]));
-		pq.offer(new int[] {K, 0});  // {정점 번호, 가중치}
+		PriorityQueue<long[]> pq = new PriorityQueue<>((a, b) -> Long.compare(a[1], b[1]));
+		pq.offer(new long[] {start, 0});  // {정점 번호, 시작점으로부터 현재 거리}
 		
 		while (!pq.isEmpty()) {
-			int[] cur = pq.poll();
-			int v = cur[0], w = cur[1];
-			if (w != minDist[v]) continue;
+			long[] cur = pq.poll();
+			int u = (int) cur[0];
+			long dist = cur[1];
 			
-			for (Edge edge : adj[v]) {
-				int nd = minDist[v] + edge.cost;
-				if (nd < minDist[edge.to]) {
-					minDist[edge.to] = nd;
-					pq.offer(new int[] {edge.to, nd});
+			// 이미 더 짧은 거리로 갱신된 적 있으면 버림
+			if (dist != minDist[u]) continue;
+			
+			for (int[] edge : adj[u]) {
+				int next = edge[0];
+				int w = edge[1];
+				
+				long nd = dist + w;
+				if (nd < minDist[next]) {
+					minDist[next] = nd;
+					pq.offer(new long[] {next, nd});
 				}
 			}
 		}
@@ -64,19 +65,23 @@ public class Main {
 		sb = new StringBuilder();
 		
 		V = nextInt(); E = nextInt();
-		K = nextInt();
+		K = nextInt();  // 시작 정점의 번호 (1-based)
+		
 		adj = new List[V + 1];
 		for (int i = 1; i <= V; i++) adj[i] = new ArrayList<>();
 		
-		for (int i = 0; i < E; i++) {
+		for (int r = 0; r < E; r++) {
 			int u = nextInt(), v = nextInt(), w = nextInt();
-			adj[u].add(new Edge(v, w));
+			adj[u].add(new int[] {v, w});
 		}
 		
-		dijkstra();
+		dijkstra(K);
+		
 		for (int i = 1; i <= V; i++) {
-			sb.append(minDist[i] != INF ? minDist[i] : "INF").append("\n");
+			sb.append(minDist[i] == INF ? "INF" : minDist[i]);
+			sb.append("\n");
 		}
+		
 		System.out.println(sb);
 	}
 }
