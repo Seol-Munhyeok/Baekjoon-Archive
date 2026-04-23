@@ -13,7 +13,7 @@ int main(){
     sort(v.begin(), v.end());
     int end = 0;
     for (int i = 0; i < N; i++){
-        if (end > v[i].first) end += v[i].second;
+        if (end > v[i].first) end = v[i].second + end;
         else end = v[i].first + v[i].second;
     }
     cout << end << '\n';
