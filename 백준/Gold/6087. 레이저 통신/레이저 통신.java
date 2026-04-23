@@ -1,9 +1,10 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.List;
-import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -23,52 +24,35 @@ public class Main {
 	
 	static final int[] dy = {-1, 0, 1, 0};
 	static final int[] dx = {0, 1, 0, -1};
-	static final int INF = 1_000_000_000;
 	static int W, H;
 	static List<int[]> lasers;
 	static char[][] map;
-	static int[][][] minDist;  // dist[y][x][dir] = 꺾은 횟수, INF (미방문)
+	static int[][][] dist;  // dist[y][x][dir] = 꺾은 횟수, -1 (미방문)
 	
-	static class State {
-		int y, x, dir, cost;
-		State(int y, int x, int dir, int cost) {
-			this.y = y;
-			this.x = x;
-			this.dir = dir;
-			this.cost = cost;
-		}
-	}
-	
-	static int dijkstra(int sy, int sx, int ey, int ex) {
-		minDist = new int[H][W][4];
-		for (int i = 0; i < H; i++) {
-			for (int j = 0; j < W; j++) {
-				Arrays.fill(minDist[i][j], INF);
-			}
-		}
-		
-		PriorityQueue<State> pq = new PriorityQueue<>((a, b) -> Integer.compare(a.cost, b.cost));
+	static int bfs(int sy, int sx, int ey, int ex) {
+		Deque<int[]> dq = new ArrayDeque<>();
 		for (int d = 0; d < 4; d++) {
-			pq.offer(new State(sy, sx, d, 0));
-			minDist[sy][sx][d] = 0;
+			dq.offerLast(new int[] {sy, sx, d});
+			dist[sy][sx][d] = 0;
 		}
 		
-		while (!pq.isEmpty()) {
-			State cur = pq.poll();
-			if (cur.y == ey && cur.x == ex) return cur.cost;
+		while (!dq.isEmpty()) {
+			int[] cur = dq.pollFirst();
+			int y = cur[0], x = cur[1], curDir = cur[2];
 			
-			if (cur.cost != minDist[cur.y][cur.x][cur.dir]) continue;
+			if (y == ey && x == ex) return dist[y][x][curDir];
 			
-			for (int d = 0; d < 4; d++) {
-				int ny = cur.y + dy[d], nx = cur.x + dx[d];
+			for (int dir = 0; dir < 4; dir++) {
+				int ny = y + dy[dir], nx = x + dx[dir];
+				int nd = dist[y][x][curDir] + ((curDir != dir) ? 1 : 0);
+				
 				if (ny >= H || ny < 0 || nx >= W || nx < 0) continue;
 				if (map[ny][nx] == '*') continue;
 				
-				int nd = cur.cost + (cur.dir != d ? 1 : 0);
-				
-				if (nd < minDist[ny][nx][d]) {
-					minDist[ny][nx][d] = nd;
-					pq.offer(new State(ny, nx, d, nd));
+				if (dist[ny][nx][dir] == -1 || dist[ny][nx][dir] > nd) {
+					dist[ny][nx][dir] = nd;
+					if (curDir == dir) dq.offerFirst(new int[] {ny, nx, dir});
+					else dq.offerLast(new int[] {ny, nx, dir});
 				}
 			}
 		}
@@ -94,12 +78,20 @@ public class Main {
 			}
 		}
 		
+		// dist 초기화
+		dist = new int[H][W][4];
+		for (int i = 0; i < H; i++) {
+			for (int j = 0; j < W; j++) {
+				Arrays.fill(dist[i][j], -1);
+			}
+		}
+		
 		int sy = lasers.get(0)[0];
 		int sx = lasers.get(0)[1];
 		int ey = lasers.get(1)[0];
 		int ex = lasers.get(1)[1];
 		
-		int answer = dijkstra(sy, sx, ey, ex);
+		int answer = bfs(sy, sx, ey, ex);
 		
 		System.out.println(answer);
 	}
