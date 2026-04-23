@@ -45,7 +45,7 @@ public class Main {
 		return parent[x] = find(parent[x]);
 	}
 	
-	static void makeSet(int V) {
+	static void makeSet(int V, List<Edge> connected) {
 		parent = new int[V + 1];
 		size = new int[V + 1];
 		for (int i = 1; i <= V; i++) {
@@ -55,7 +55,7 @@ public class Main {
 	}
 	
 	static int kruskalMST(int V, List<Edge> connected) {
-		makeSet(V);
+		makeSet(V, connected);
 		
 		int total = 0;
 		// 이미 성사된 관계는 먼저 union
@@ -63,14 +63,14 @@ public class Main {
 			union(e.from, e.to);
 			total += e.w;
 		}
-		
-		// 나머지 간선들로 최대 스패닝 트리	
-		edges.sort((a, b) -> Integer.compare(b.w, a.w));
+				
+		edges.sort((a, b) -> Integer.compare(b.w, a.w));  // '최대' 스패닝 트리를 찾아아 함.
 		
 		for (Edge edge : edges) {
-			if (union(edge.from, edge.to)) {
-				total += edge.w;
-			}
+			if (!union(edge.from, edge.to)) continue;
+			
+			union(edge.from, edge.to);
+			total += edge.w;
 		}
 		
 		return total;
