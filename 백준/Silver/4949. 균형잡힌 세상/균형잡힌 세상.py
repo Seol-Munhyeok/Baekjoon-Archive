@@ -26,6 +26,6 @@ def is_balanced(sentence):
 while True:
     sentence = sys.stdin.readline()
     sentence = sentence.replace('\n', '')
-    if sentence == '.':
+    if len(sentence) == 1 and sentence.strip() == '.':
         break
     print(is_balanced(sentence))
