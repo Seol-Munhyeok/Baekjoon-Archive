@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int N, M, J, loc, ret;
+int N, M, J, loc, ret, dx;
 int a[14];
 
 int main(){
@@ -10,10 +10,11 @@ int main(){
     int start = 1, end = M;
     cin >> J;
     while (J--){
-        int dx = 0;
         cin >> loc;
+        // 바구니 위치에 떨어질 때
+        if (start <= loc && loc <= end) dx = 0;
         // 바구니 오른쪽에 떨어질 때
-        if (end < loc) {
+        else if (end < loc) {
             dx = loc - end; start += dx; end += dx;
         }
         // 바구니 왼쪽에 떨어질 때
