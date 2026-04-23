@@ -55,9 +55,9 @@ public class Main {
 		
 		while (!pq.isEmpty()) {
 			State cur = pq.poll();
+			if (cur.y == ey && cur.x == ex) return cur.cost;
 			
 			if (cur.cost != minDist[cur.y][cur.x][cur.dir]) continue;
-			if (cur.y == ey && cur.x == ex) return cur.cost;
 			
 			for (int d = 0; d < 4; d++) {
 				int ny = cur.y + dy[d], nx = cur.x + dx[d];
