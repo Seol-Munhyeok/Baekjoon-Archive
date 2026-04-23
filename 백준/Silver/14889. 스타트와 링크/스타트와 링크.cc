@@ -2,9 +2,8 @@
 using namespace std;
 
 int N, cnt, a[22][22], ret = 1e9;
-vector<int> v;
 
-void go(){
+void go(vector<int>& v){
     int x = 0, y = 0;
     for (int i = 0; i < N; i++){
         for (int j = 0; j < N; j++){
@@ -16,14 +15,14 @@ void go(){
     ret = min(ret, abs(x - y));
 }
 
-void combi(int start){
+void combi(int start, vector<int>& v){
     if (cnt == (N / 2)){
-        go();
+        go(v);
         return;
     }
     for (int i = start + 1; i < N; i++) {
         v[i] = 1; cnt++;
-        combi(i);
+        combi(i, v);
         v[i] = 0; cnt--;
     }
     return;
@@ -37,8 +36,9 @@ int main(){
             cin >> a[i][j];
         }
     }
+    vector<int> v;
     for (int i = 0; i < N; i++) v.push_back(0);
-    combi(-1);
+    combi(-1, v);
     cout << ret << '\n';
     return 0;
 }
