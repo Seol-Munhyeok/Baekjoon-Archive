@@ -54,8 +54,7 @@ public class Main {
 		while (!pq.isEmpty()) {
 			State cur = pq.poll();
 			
-			// stale check
-			if (best[cur.node].size() == k && cur.dist > best[cur.node].peek()) continue;
+			// stale check skip
 			
 			for (Edge edge : adj[cur.node]) {
 				int next = edge.to;
