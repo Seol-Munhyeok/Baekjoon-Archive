@@ -23,7 +23,7 @@ int main(){
         cin >> a[i];
         mx = max(mx, a[i]);
     }
-    lo = mx; hi = 1e9;
+    lo = mx; hi = 1e9 + 4;
     while (lo <= hi){
         ll mid = (lo + hi) / 2;
         if (check(mid)){
