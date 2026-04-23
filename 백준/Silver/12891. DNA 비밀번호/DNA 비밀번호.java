@@ -1,22 +1,6 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.util.Scanner;
 
 public class Main {
-	
-	static BufferedReader br;
-	static StringTokenizer st;
-	
-	static String next() throws Exception {
-		while (st == null || !st.hasMoreTokens()) {
-			st = new StringTokenizer(br.readLine());
-		}
-		return st.nextToken();
-	}
-	
-	static int nextInt() throws Exception {
-		return Integer.parseInt(next());
-	}
 	
 	static int minA, minC, minG, minT;
 	static int[] cnt = new int[128];  // 'A'=65, ..., 'Z'=90
@@ -25,12 +9,11 @@ public class Main {
 		return cnt['A'] >= minA && cnt['C'] >= minC && cnt['G'] >= minG && cnt['T'] >= minT;
 	}
 	
-	public static void main(String[] args) throws Exception {
-		br = new BufferedReader(new InputStreamReader(System.in));
-		
-		int S = nextInt(); int P = nextInt();
-		char[] str = next().toCharArray();
-		minA = nextInt(); minC = nextInt(); minG = nextInt(); minT = nextInt();
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int S = sc.nextInt(); int P = sc.nextInt();
+		char[] str = sc.next().toCharArray();
+		minA = sc.nextInt(); minC = sc.nextInt(); minG = sc.nextInt(); minT = sc.nextInt();
  
 		// 첫 window 탐색
 		for (int i = 0; i < P; i++) {
