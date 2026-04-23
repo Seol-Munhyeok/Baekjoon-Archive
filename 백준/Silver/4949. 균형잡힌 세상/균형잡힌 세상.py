@@ -24,7 +24,8 @@ def is_balanced(sentence):
 
 
 while True:
-    sentence = sys.stdin.readline().rstrip()
+    sentence = sys.stdin.readline()
+    sentence = sentence.replace('\n', '')
     if sentence == '.':
         break
     print(is_balanced(sentence))
