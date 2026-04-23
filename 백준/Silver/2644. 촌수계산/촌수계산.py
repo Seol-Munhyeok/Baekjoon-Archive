@@ -10,18 +10,22 @@ for _ in range(m):
     graph[x].append(y)
     graph[y].append(x)
 
-answer = -1
-def dfs(cur, depth):
-    global answer
-    visited[cur] = True
-    if cur == b:
-        answer = depth
-        return
+def bfs(a, b):
+    queue = deque()
+    queue.append(a)
+    level = 0
+    while queue:
+        size = len(queue)
+        for _ in range(size):
+            cur = queue.popleft()
+            visited[cur] = True
+            if cur == b:
+                return level
+            for neighbor in graph[cur]:
+                if not visited[neighbor]:
+                    queue.append(neighbor)
+        level += 1
     
-    for neighbor in graph[cur]:
-        if not visited[neighbor]:
-            dfs(neighbor, depth + 1)
-    return
+    return -1
 
-dfs(a, 0)
-print(answer)
+print(bfs(a, b))
