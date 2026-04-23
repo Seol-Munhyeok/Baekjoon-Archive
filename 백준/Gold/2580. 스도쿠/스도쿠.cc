@@ -43,14 +43,13 @@ void dfs(int n){
         found = true;
         return;
     }
-    int y, x;
+
     for (int k = 1; k <= 9; k++){
-        y = v[n].first;  x = v[n].second;
-        a[y][x] = k;
-        if (check(y, x)) dfs(n + 1); // 그 숫자가 가능하면 다음 빈칸 탐색
+        a[v[n].first][v[n].second] = k;
+        if (check(v[n].first, v[n].second)) dfs(n + 1); // 그 숫자가 가능하면 다음 빈칸 탐색
+        if (found) return;
     }
-    if (found) return;
-    a[y][x] = 0;  // 다 불가능하면 원상복구
+    a[v[n].first][v[n].second] = 0;  // 다 불가능하면 원상복구
     return;
 }
 
@@ -66,5 +65,6 @@ int main(){
         }
     }
     dfs(0);
+
     return 0;
 }
