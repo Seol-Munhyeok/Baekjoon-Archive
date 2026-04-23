@@ -76,8 +76,8 @@ public class Main {
 		arr = new int[N + 1];
 		for (int i = 1; i <= N; i++) arr[i] = nextInt();
 		
-		maxTree = new long[4 * N];
-		minTree = new long[4 * N];
+		maxTree = new long[4 * N]; Arrays.fill(maxTree, -INF);
+		minTree = new long[4 * N]; Arrays.fill(minTree, INF);
 		initMaxTree(1, 1, N);
 		initMinTree(1, 1, N);
 		
