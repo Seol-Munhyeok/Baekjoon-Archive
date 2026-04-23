@@ -1,7 +1,5 @@
 #include <bits/stdc++.h>
 using namespace std;
-#define X first
-#define Y second 
 
 int V, E, st, en;
 vector<pair<int, int>> adj[1005];   // {비용, 정점 번호}
@@ -26,14 +24,14 @@ int main(){
     while (!pq.empty()){
         auto cur = pq.top();  pq.pop();  // {비용, 정점 번호}
         // 거리가 d에 있는 값과 다를 경우 넘어감
-        if (d[cur.Y] != cur.X) continue;
-        for (auto nxt : adj[cur.Y]){
-            if (d[nxt.Y] > d[cur.Y] + nxt.X){
+        if (d[cur.second] != cur.first) continue;
+        for (auto nxt : adj[cur.second]){
+            if (d[nxt.second] > d[cur.second] + nxt.first){
                 // cur를 거쳐가는 것이 더 작은 값을 가질 경우
                 // d[nxt_idx]을 갱신하고 우선순위 큐에 (거리, nxt.Y)를 추가
-                d[nxt.Y] = d[cur.Y] + nxt.X;
-                pq.push({d[nxt.Y], nxt.Y});
-                pre[nxt.Y] = cur.Y;
+                d[nxt.second] = d[cur.second] + nxt.first;
+                pq.push({d[nxt.second], nxt.second});
+                pre[nxt.second] = cur.second;
             }
         }
     }
