@@ -1,29 +1,38 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-const int MAX = 1000000, INF = 1e9;
+const int MAX = 1000000;
 int N, dp[MAX + 4];
-
-void go(int here){
-    if (here == 0) return;
-    cout << here << ' ';
-    if (here % 3 == 0 && dp[here] == (dp[here / 3] + 1)) go(here / 3);
-    else if (here % 2 == 0 && dp[here] == (dp[here / 2] + 1)) go(here / 2);
-    else if ((here - 1 >= 0) && (dp[here] == (dp[here - 1] + 1))) go(here - 1);
-    return;
+vector<int> v;
+int go(int n){
+    // 기저 사례
+    if (n == 1) return 0;
+    if (n == 2 || n == 3) return 1;
+    // 메모이제이션
+    int &ret = dp[n];
+    if (ret != -1) return ret;
+    // 로직
+    if (n % 6 == 0) return ret = min({go(n / 3), go(n / 2), go(n - 1)}) + 1;
+    if (n % 3 == 0) return ret = min(go(n / 3), go(n - 1)) + 1;
+    if (n % 2 == 0) return ret = min(go(n / 2), go(n - 1)) + 1;
+    return ret = go(n - 1) + 1;
 }
 
 int main(){
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    cin >> N;
-    fill(dp, dp + MAX + 4, INF);
+    memset(dp, -1, sizeof(dp));
     dp[1] = 0;
-    for (int i = 1; i <= N; i++){
-        if (!(i % 3)) dp[i] = min(dp[i / 3] + 1, dp[i]);
-        if (!(i % 2)) dp[i] = min(dp[i / 2] + 1, dp[i]);
-        dp[i] = min(dp[i - 1] + 1, dp[i]);
+    dp[2] = dp[3] = 1;
+    for (int i = 1; i <= MAX; i++) {
+        go(i);
     }
-    cout << dp[N] << "\n";
-    go(N);
+    cin >> N;
+    cout << dp[N] << '\n';
+    while (N != 0){
+        cout << N << ' ';
+        if (dp[N] == dp[N - 1] + 1) N -= 1;
+        else if (N % 2 == 0 && dp[N] == dp[N / 2] + 1) N /= 2;
+        else if (N % 3 == 0 && dp[N] == dp[N / 3] + 1) N /= 3;
+    }
     return 0;
 }
