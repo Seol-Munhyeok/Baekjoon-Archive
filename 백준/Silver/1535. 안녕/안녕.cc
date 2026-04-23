@@ -5,7 +5,8 @@ int N, dp[21][101], L[2002], J[2002];
 //dp[i][w] = 최대 체력이 w인 경우 i번째까지 판단했을 때의 최대 기쁨
 
 int knapsack(int i, int W){
-    if (i <= 0 || W <= 0) return 0;
+    if (i <= 0) return 0;
+    if (W <= 0) return -1e9;
     int &ret = dp[i][W];
     if (ret != -1) return ret;
     if (L[i] > W) return knapsack(i - 1, W);
