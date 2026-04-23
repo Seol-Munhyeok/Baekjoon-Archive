@@ -17,95 +17,93 @@ public class Main {
 		return Integer.parseInt(next());
 	}
 	
-	static final int MAX_MEMORY = 100_000;
+	static HashMap<String, Integer> value;   // var -> 시작 주소
+	static HashMap<String, Integer> sizeMap; // var -> 할당된 크기
+	static LinkedList<int[]> range; // allocated ranges [start, end], always sorted by start
 	
-	// var -> 시작 주소
-	static Map<String, Integer> addressMap = new HashMap<>();
-	// var -> 해당 구간 노드
-	static Map<String, Node> nodeMap = new HashMap<>();
-	// 할당된 메모리의 구간을 연결리스트로 저장
-	static LinkedList allocatedList = new LinkedList();
-	
-	static class Node {
-		int start;
-		int end;
-		Node prev;
-		Node next;
+	static void processFree(String var) {
+		Integer startAddr = value.get(var);
+		if (startAddr == null || startAddr == 0) return;
 		
-		Node(int start, int end) {
-			this.start = start;
-			this.end = end;
-		}
-	}
-	
-	static class LinkedList {
-		Node head;
-		Node tail;
-		
-		LinkedList() {
-			head = new Node(-1, -1);
-			tail = new Node(MAX_MEMORY + 1, MAX_MEMORY + 1);
-			
-			head.next = tail;
-			tail.prev = head;
-		}
-	
-	
-		void insertBefore(Node nextNode, Node newNode) {
-			Node prevNode = nextNode.prev;
-			
-			newNode.prev = prevNode;
-			newNode.next = nextNode;
-			prevNode.next = newNode;
-			nextNode.prev = newNode;
-		}
-		
-		void remove(Node node) {
-			node.prev.next = node.next;
-			node.next.prev = node.prev;
-		}
-	}
-	
-	static void malloc(String var, int size) {
-		int candidateStart = 1;  // 지금 검사 중인 빈 공간의 시작 주소
-		Node nextNode = allocatedList.head.next;
-		
-		while (candidateStart + size - 1 <= MAX_MEMORY) {
-			int gapSize = nextNode.start - candidateStart;
-			
-			if (gapSize >= size) {
-				Node newNode = new Node(candidateStart, candidateStart + size - 1);
-				allocatedList.insertBefore(nextNode, newNode);
-				
-				addressMap.put(var, candidateStart);
-				nodeMap.put(var, newNode);
-				return;
+		int allocSize = sizeMap.get(var);
+        int endAddr = startAddr + allocSize - 1;
+        
+        ListIterator<int[]> it = range.listIterator();
+		while (it.hasNext()) {
+			int[] cur = it.next();
+			if (cur[0] == startAddr && cur[1] == endAddr) {
+				it.remove();
+				break;
 			}
-			
-			if (nextNode == allocatedList.tail) break;
-			
-			candidateStart = nextNode.end + 1;
-			nextNode = nextNode.next;
 		}
 		
-		addressMap.put(var, 0);  // 넣을 자리가 없음 -> 0 할당
+		value.put(var, 0);
+		sizeMap.put(var, 0);
+	}
+
+	static void alloc(String var, int startAddr, int size, ListIterator<int[]> it) {
+		int endAddr = startAddr + size - 1;
+		
+		if (endAddr > 100_000) {
+			value.put(var, 0);
+			sizeMap.put(var, 0);
+			return;
+		}
+		
+		value.put(var, startAddr);
+		sizeMap.put(var, size);
+		
+		it.add(new int[] {startAddr, endAddr});
 	}
 	
-	static void free(String var) {
-		Integer address = addressMap.get(var);
-		if (address == null || address == 0) return;
+	static void processMalloc(String var, int size) {
+		ListIterator<int[]> it = range.listIterator();
 		
-		Node node = nodeMap.get(var);
-		allocatedList.remove(node);
+		// 빈 리스트면 iterator 위치에 바로 add
+		if (!it.hasNext()) {
+			alloc(var, 1, size, it);
+			return;
+		}
 		
-		addressMap.put(var, 0);
-		nodeMap.remove(var);
+		int[] first = it.next();
+		
+		// 맨 앞 빈 공간 확인
+        if (first[0] - 1 >= size) {
+        	it.previous();  // add를 첫 원소 앞에 하기 위해 한 칸 뒤로
+        	alloc(var, 1, size, it);
+        	return;
+        }
+        
+        int[] prev = first;
+        
+        // 중간 빈 공간 확인
+        while (it.hasNext()) {
+        	int[] cur = it.next();
+        	
+        	int startAddr = prev[1] + 1;
+        	int gap = cur[0] - prev[1] - 1;
+        	
+        	if (gap >= size) {
+        		it.previous();
+        		alloc(var, startAddr, size, it);
+        		return;
+        	}
+        	
+        	prev = cur;
+        }
+        
+        // 마지막 뒤쪽 확인
+        int startAddr = prev[1] + 1;
+        alloc(var, startAddr, size, it);
 	}
-	
 	
 	public static void main(String[] args) throws Exception {
 		br = new BufferedReader(new InputStreamReader(System.in));
 		sb = new StringBuilder();
+		
+		value = new HashMap<>();
+		sizeMap = new HashMap<>();
+		range = new LinkedList<>();
 		
 		int N = nextInt();
 		for (int i = 0; i < N; i++) {
@@ -113,18 +111,18 @@ public class Main {
 			
 			if (cmd.charAt(0) == 'f') {
 				String var = cmd.substring(5, 9);
-				free(var);
+				processFree(var);
 			}
 			else if (cmd.charAt(0) == 'p') {
 				String var = cmd.substring(6, 10);
-				sb.append(addressMap.getOrDefault(var, 0)).append("\n");
+				sb.append(value.getOrDefault(var, 0)).append("\n");
 			}
 			else {
 				String var = cmd.substring(0, 4);
 				int s = cmd.indexOf('(');
 				int e = cmd.indexOf(')');
 				int size = Integer.parseInt(cmd.substring(s + 1, e));
-				malloc(var, size);
+				processMalloc(var, size);
 			}
 		}
 		
