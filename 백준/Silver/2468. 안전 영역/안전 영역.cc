@@ -1,10 +1,11 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int a[101][101], visited[101][101];
+int a[103][103], visited[103][103];
 const int dy[] = {-1, 0, 1, 0};
 const int dx[] = {0, 1, 0, -1}; 
-int N, ny, nx, cnt, ret, H;
+int N, ny, nx, cnt, ret, H, tmp = -1;
+
 
 void dfs(int y, int x){
     visited[y][x] = 1;
@@ -36,7 +37,8 @@ int main(){
                 }
             }
         }
-        ret = max(ret, cnt);
+        ret = max(cnt, tmp);
+        tmp = ret;
         H++;
     }
     cout << ret << '\n';
