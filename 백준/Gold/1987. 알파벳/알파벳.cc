@@ -1,26 +1,35 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int R, C, ret, check[100];
+int R, C, check[100];
 const int dy[] = {-1, 0, 1, 0};
 const int dx[] = {0, 1, 0, -1};
 char a[25][25];
+vector<int> result;
 
+bool canNotMove(int y, int x){
+    for (int i = 0; i < 4; i++){
+        int ny = y + dy[i];
+        int nx = x + dx[i];
+        if (ny < 0 || ny >= R || nx < 0 || nx >= C) continue;
+        if (check[a[ny][nx]] == 0) return false;
+    }
+    return true;
+}
 
 void go(int y, int x, int cnt){
-    ret = max(ret, cnt);
+    if (canNotMove(y, x)){
+        result.push_back(cnt);
+        return;
+    }
     for (int i = 0; i < 4; i++){
         int ny = y + dy[i];
         int nx = x + dx[i];
         if (ny < 0 || ny >= R || nx < 0 || nx >= C || check[a[ny][nx]]) continue;
-        int next = a[ny][nx];
-        if (check[next] == 0){
-            check[next] = 1;
-            go(ny, nx, cnt + 1);
-            check[next] = 0;
-        }
+        check[a[ny][nx]] = 1;
+        go(ny, nx, cnt + 1);
+        check[a[ny][nx]] = 0;
     }
-    return;
 }
     
 
@@ -34,6 +43,6 @@ int main(){
     }
     check[a[0][0]] = 1;
     go(0, 0, 1);
-    cout << ret << '\n';
+    cout << *max_element(result.begin(), result.end()) << '\n';
     return 0;
 }
