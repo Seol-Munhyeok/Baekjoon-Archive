@@ -1,38 +1,35 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-const int n = 18;
-bool isP[20];
-double a, b, dp[20][20][20];
-
-double go(int idx, int x, int y){
-    if (idx == n) return isP[x] || isP[y] ? 1.0 : 0.0;
-    double &ret = dp[idx][x][y];
-    if (ret > -0.5) return ret;
-    ret = 0.0;
-    ret += go(idx + 1, x + 1, y) * a * (1 - b);
-    ret += go(idx + 1, x + 1, y + 1) * a * b;
-    ret += go(idx + 1, x, y + 1) * (1 - a) * b;
-    ret += go(idx + 1, x, y) * (1 - a) * (1 - b);
-    return ret;
-}
-
-void era(){
-    fill(isP, isP + 20, 1);
-    isP[0] = 0; isP[1] = 0;
-    for (int i = 2; i <= 20; i++){
-        for (int j = 2 * i; j <= 20; j += i){
-            isP[j] = 0;
-        }
-    }
-}
+int x, y;
+double p, q, ret;
+int notPrimes[] = {0, 1, 4, 6, 8, 9, 10, 12, 14, 15, 16, 18};
+double dp[20][20][20];
 
 int main(){
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    cin >> a >> b;
-    a /= 100; b /= 100;
-    era();
-    memset(dp, -1, sizeof(dp));
-    cout << go(0, 0, 0) << "\n";
+    cin >> x >> y;
+    p = x / 100.0;
+    q = y / 100.0;
+    dp[1][0][0] = (1 - p) * (1 - q);
+    dp[1][0][1] = (1 - p) * q;
+    dp[1][1][0] = p * (1 - q);
+    dp[1][1][1] = p * q;
+    for (int i = 2; i <= 18; i++){
+        for(int a = 0; a <= 18; a++){
+            for(int b = 0; b <= 18; b++){
+                dp[i][a][b] += dp[i - 1][a - 1][b - 1] * p * q;
+                dp[i][a][b] += dp[i - 1][a][b - 1] * (1 - p) * q;
+                dp[i][a][b] += dp[i - 1][a - 1][b] * p * (1 - q);
+                dp[i][a][b] += dp[i - 1][a][b] * (1 - p) * (1 - q);
+            }
+        }
+    }
+    for (int i : notPrimes){
+        for (int j : notPrimes){
+            ret += dp[18][i][j];
+        }
+    }
+    cout << 1 - ret << "\n";
     return 0;
 }
