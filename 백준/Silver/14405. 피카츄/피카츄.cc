@@ -1,26 +1,17 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-string s, str;
-
+string s;
+bool flag = 0;
 int main(){
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    cin >> str;
-    s = "";
-    int len = 0;
-    bool ok = 1;
-    for (char ch : str){
-        s += ch;
-        if (s == "pi" || s == "ka" || s == "chu"){
-            len = 0;
-            s = "";
-        }
-        else {
-            len++;
-            if (len >= 3) { ok = 0; break; }
-        }
+    cin >> s;
+    for (int i = 0; i < s.size(); i++){
+        if (i < s.size() - 1 && s.substr(i, 2) == "pi" || s.substr(i, 2) == "ka") i += 1;
+        else if (i < s.size() - 2 && s.substr(i, 3) == "chu") i += 2;
+        else { flag = 1; break; }
     }
-    if (len > 0) ok = 0;
-    cout << (ok ? "YES" : "NO") << '\n';
+    if (flag) cout << "NO" << '\n';
+    else cout << "YES" << '\n';
     return 0;
 }
