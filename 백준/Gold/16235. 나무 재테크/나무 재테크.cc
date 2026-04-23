@@ -16,7 +16,8 @@ void springAndSummer(){
             vector<int> tmp;
             int diedTreeNuts = 0;
             sort(field[i][j].begin(), field[i][j].end());
-            for (int age : field[i][j]){
+            for (int k = 0; k < field[i][j].size(); k++){
+                int age = field[i][j][k];
                 if (age <= nutrients[i][j]){
                     nutrients[i][j] -= age;
                     tmp.push_back(age + 1);
@@ -25,8 +26,8 @@ void springAndSummer(){
             }
             nutrients[i][j] += diedTreeNuts;
             field[i][j].clear();
-            for (int age : tmp){
-                field[i][j].push_back(age);
+            for (int k = 0; k < tmp.size(); k++){
+                field[i][j].push_back(tmp[k]);
             }
         }
     }
@@ -46,8 +47,8 @@ void fall(){
     for (int i = 0; i < N; i++){
         for (int j = 0; j < N; j++){
             if (field[i][j].empty()) continue;
-            for (int age : field[i][j]){
-                if (age % 5 == 0) reproduce(i, j);
+            for (int k = 0; k < field[i][j].size(); k++){
+                if (field[i][j][k] % 5 == 0) reproduce(i, j);
             }
         }
     }
