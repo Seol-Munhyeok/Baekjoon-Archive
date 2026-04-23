@@ -20,13 +20,11 @@ public class Main {
 		return Integer.parseInt(next());
 	}
 	
-	static final int LOG = 21; // 2^20 = 1,000,000
-	static int N;  			   // 정점의 수
-	static List<Integer>[] adj;  // {v, w}
+	static int N;
+	static List<Integer>[] adj;
 	static int[] depth;  	   // 루트로부터 깊이
-	static int[] dist;  	   // 루트로부터 누적 거리
 	static boolean[] visited;  // 각 노드의 깊이가 계산되었는지 여부
-	static int[][] parent;     // parent[k][v] = v의 2^k번째 조상
+	static int[] parent;       // parent[v] = v의 조상
 	
 	// 루트 노드부터 시작하여 깊이를 구하는 함수
 	static void dfs(int x, int dep) {
@@ -34,46 +32,23 @@ public class Main {
 		depth[x] = dep;
 		
 		for (int y : adj[x]) {
-			if (visited[y]) continue;  // 이미 깊이를 구했다면 넘기기
-			parent[0][y] = x;   	   // 바로 위의 조상 저장 (2^0 = 1)
+			if (visited[y]) continue;
+			parent[y] = x;
 			dfs(y, dep + 1);
 		}
 	}
 	
-	// 전체 부모 관계를 설정하는 함수
-	static void setParent() {
-		dfs(1, 0);  // 루트 노드는 1번 노드
-		for (int k = 1; k < LOG; k++) {
-			for (int v = 1; v <= N; v++) {
-				int midNode = parent[k - 1][v];
-	            parent[k][v] = (midNode == 0) ? 0 : parent[k - 1][midNode];
-			}
-		}
-	}
-	
-	// 노드 a, b의 LCA를 찾는 함수
 	static int lca(int a, int b) {
-		// b가 더 깊도록 설정
-		if (depth[a] > depth[b]) { int t = a; a = b; b = t; }
-
-		// 먼저 깊이가 동일하도록
-		for (int i = LOG - 1; i >= 0; i--) {
-			if (depth[b] - depth[a] >= (1 << i)) {
-				b = parent[i][b];
-			}
-		}
-		// 부모가 같아지도록
-		if (a == b) return a;
-		
-		for (int i = LOG - 1; i >= 0; i--) {
-			// 조상을 향해 거슬러 올라가기
-			if (parent[i][a] != parent[i][b]) {
-				a = parent[i][a];
-				b = parent[i][b];
-			}
-		}
-		// 이후의 부모가 찾고자 하는 조상
-		return parent[0][a];
+		// 1) 깊이 맞추기: 더 깊은 쪽을 위로 올림
+	    while (depth[a] > depth[b]) a = parent[a];
+	    while (depth[b] > depth[a]) b = parent[b];
+	    
+	    // 2) 같이 올라가서 만나는 지점이 LCA
+	    while (a != b) {
+	    	a = parent[a];
+	    	b = parent[b];
+	    }
+	    return a;
 	}
 	
 	public static void main(String[] args) throws Exception {
@@ -85,7 +60,7 @@ public class Main {
 		for (int i = 0; i <= N; i++) adj[i] = new ArrayList<>();
 		visited = new boolean[N + 1];
 		depth = new int[N + 1];
-		parent = new int[LOG][N + 1];
+		parent = new int[N + 1];
 		
 		for (int r = 0; r < N - 1; r++) {
 			int u = nextInt(); int v = nextInt();
@@ -93,7 +68,7 @@ public class Main {
 			adj[v].add(u);
 		}
 		
-		setParent();
+		dfs(1, 0); // 트리 부모 관계 및 깊이 저장, 루트 노드는 1번 노드
 		
 		int M = nextInt();
 		for (int r = 0; r < M; r++) {
