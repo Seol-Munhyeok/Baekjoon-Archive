@@ -4,6 +4,7 @@ using namespace std;
 char a[103][103];
 int b[103][103];
 int H, W, ret;
+string s;
 bool flag;
 
 int main(){
