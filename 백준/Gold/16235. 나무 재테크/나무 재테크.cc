@@ -24,7 +24,10 @@ void springAndSummer(){
                 else diedTreeNuts += (age / 2);
             }
             nutrients[i][j] += diedTreeNuts;
-            field[i][j] = tmp;
+            field[i][j].clear();
+            for (int age : tmp){
+                field[i][j].push_back(age);
+            }
         }
     }
 }
