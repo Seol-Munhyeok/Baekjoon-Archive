@@ -37,10 +37,10 @@ public class Main {
 		
 		int start = 0, end = max;
 		int mid = 0;
-		while (start <= end) {
+		while (start < end) {
 			mid = (start + end) / 2;
 			if (cut(arr, mid) >= M) start = mid + 1;
-			else end = mid - 1;
+			else end = mid;
 		}
 		System.out.println(start - 1);
 	}
