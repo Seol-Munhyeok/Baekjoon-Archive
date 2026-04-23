@@ -3,12 +3,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.PriorityQueue;
 import java.util.StringTokenizer;
-/*
- * 메모리 : 
- * 시간 : 
- */
+
 public class Main {
 	static BufferedReader br;
 	static StringTokenizer st;
@@ -36,26 +32,28 @@ public class Main {
 		Arrays.fill(minDist, INF);
 		minDist[start] = 0;
 		
-		PriorityQueue<long[]> pq = new PriorityQueue<>((a, b) -> Long.compare(a[1], b[1]));
-		pq.offer(new long[] {start, 0});  // {정점 번호, 시작점으로부터 현재 거리}
+		visited = new boolean[V + 1];
 		
-		while (!pq.isEmpty()) {
-			long[] cur = pq.poll();
-			int u = (int) cur[0];
-			long dist = cur[1];
+		for (int i = 1; i <= V; i++) {
+			int u = -1;
+			long min = INF;
 			
-			// 이미 더 짧은 거리로 갱신된 적 있으면 버림
-			if (dist != minDist[u]) continue;
-			
-			for (int[] edge : adj[u]) {
-				int next = edge[0];
-				int w = edge[1];
-				
-				long nd = dist + w;
-				if (nd < minDist[next]) {
-					minDist[next] = nd;
-					pq.offer(new long[] {next, nd});
+			// 1) 방문 안 한 정점 중 dist가 가장 작은 정점 선택
+			for (int v = 1; v <= V; v++) {
+				if (!visited[v] && min > minDist[v]) {
+					min = minDist[v];
+					u = v;
 				}
+			}
+			
+			if (u == -1) break;
+			visited[u] = true;
+			
+			// 2) 최소값 갱신
+			for (int[] edge : adj[u]) {
+				int next = edge[0], w = edge[1];
+				long nd = minDist[u] + w;
+				if (nd < minDist[next]) minDist[next] = nd;
 			}
 		}
 	}
