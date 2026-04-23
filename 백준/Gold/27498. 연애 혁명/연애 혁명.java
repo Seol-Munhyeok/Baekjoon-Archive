@@ -87,11 +87,10 @@ public class Main {
 		for (int i = 0; i < E; i++) {
 			int a = nextInt(); int b = nextInt();
 			int c = nextInt(); int d = nextInt();
-			
+			edges.add(new Edge(a, b, c));
 			sum += c;
 			
 			if (d == 1) connected.add(new Edge(a, b, c));
-			else edges.add(new Edge(a, b, c));
 		}
 		
 		int maxSum = kruskalMST(V, connected);
