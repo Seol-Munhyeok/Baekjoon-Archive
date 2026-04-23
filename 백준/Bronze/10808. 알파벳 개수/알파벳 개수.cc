@@ -1,14 +1,14 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-string str;
-int cnt[26];
+string s;
+map<char, int> mp;
 int main(){
     ios::sync_with_stdio(false); cin.tie(0); cout.tie(0);
-    cin >> str;
-    for (char ch : str){
-        cnt[ch - 'a']++;
-    }
-    for (int i = 0; i < 26; i++) cout << cnt[i] << " ";
+    cin >> s;
+    for (int i = 0; i < 26; i++)
+        mp['a' + i] = 0;
+    for (char ch : s) mp[ch] += 1;
+    for (auto it : mp) cout << it.second << ' ';
     return 0;
 }
