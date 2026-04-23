@@ -1,30 +1,36 @@
 #include <bits/stdc++.h>
 using namespace std;
-string s, ret;
-int cnt[200], flag;
-char mid;
+string str, ret, tmp = "";
+map<char, int> mp;
+
+bool check(string str){
+    // 팰린드롬을 만들 수 있으면 true 반환
+    int cnt = 0;  // 각 문자 개수가 홀수인 것이 2개 이상있으면 팰린드롬 만들 수 없음 
+     for (auto it : mp) {
+        if (it.second % 2 == 1) cnt++;
+        if (cnt >= 2) return false;
+    }
+    return true;
+}
+
 int main(){
     ios::sync_with_stdio(false); cin.tie(0); cout.tie(0);
-    cin >> s;
-    for (char ch : s) cnt[ch]++;
-    for (int i = 'Z'; i >= 'A'; i--){
-        if (cnt[i]){
-            if (cnt[i] & 1) {
-                // cnt[i]가 홀수인 경우
-                mid = char(i); flag++;  // 가운데 삽입할 문자를 따로 뽑는다.
-                cnt[i]--;
-            }
-            if (flag == 2) break;  // 홀수가 두 개이상이면 만들 수 없다.
-            for (int j = 0; j < cnt[i]; j += 2){
-                ret = char(i) + ret;  // 원래 문자열 앞에 붙이고
-                ret += char(i);  // 원래 문자열 뒤에도 붙인다.
-            }
-        }
+    cin >> str;
+    for (char ch : str) mp[ch]++;
+    if (!check(str)){
+        cout << "I'm Sorry Hansoo" << '\n';
+        exit(0);
     }
-    // mid가 존재하면 만든 문자열 가운데에 mid를 삽입한다.
-    if (mid) ret.insert(ret.begin() + ret.size() / 2, mid);
-    if (flag == 2) cout << "I'm Sorry Hansoo\n";
-    else cout << ret << '\n';
-    
+    char center;  // 미할당 시, NULL '\0'으로 초기화
+    for (auto it : mp){
+        if (it.second % 2 == 1) center = it.first;
+        char ch = it.first; int cnt = it.second / 2;
+        while (cnt--) tmp += ch;
+    }
+    ret = tmp;
+    reverse(tmp.begin(), tmp.end());
+    if (center != '\0') ret += center;  // '\0' 또는 NULL도 가능
+    ret += tmp;
+    cout << ret << '\n';
     return 0;
 }
