@@ -1,23 +1,31 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int cost, n, m1, m2, c;
-int dp[100004];
+int n, m, c, dp[10001], cal[5001], price[5001];
+// dp[i] = 가격 i로 만들 수 있는 최대 칼로리를 저장
 
 int main(){
+    ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
     while (true){
-        scanf("%d %d.%d", &n, &m1, &m2);
+        float f;
+        cin >> n >> f;
         if (n == 0) break;
-        int cost = m1 * 100 + m2;
-        memset(dp, 0, sizeof(dp));
+        m = f * 100 + 0.5;
         for (int i = 0; i < n; i++){
-            scanf("%d %d.%d", &c, &m1, &m2);
-            int p = m1 * 100 + m2;
-            for (int j = p; j <= cost; j++){
-                dp[j] = max(dp[j], dp[j - p] + c);
+            cin >> c >> f;
+            cal[i] = c; price[i] = f * 100 + 0.5;
+        }
+        memset(dp, 0, sizeof(dp));
+        int ret = 0;
+        for (int i = 0; i < n; i++){
+            for (int j = 1; j <= m; j++){
+                if (j >= price[i]){
+                    dp[j] = max(dp[j], dp[j - price[i]] + cal[i]);
+                    ret = max(ret, dp[j]);
+                }
             }
         }
-        printf("%d\n", dp[cost]);
+        cout << ret << "\n";
     }
     return 0;
 }
