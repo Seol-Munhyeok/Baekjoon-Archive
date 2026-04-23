@@ -7,10 +7,11 @@ public class Main {
 		int K = sc.nextInt();
 		
 		int answer = 0;
-		while (Integer.bitCount(N) > K) {
-		    int lowbit = N & -N;
-		    answer += lowbit;
-		    N += lowbit;
+		for (int i = 0; i <= 10_000_000; i++) {
+			if (Integer.bitCount(N + i) <= K) {
+				answer = i;
+				break;
+			}
 		}
 		System.out.println(answer);
 	}
