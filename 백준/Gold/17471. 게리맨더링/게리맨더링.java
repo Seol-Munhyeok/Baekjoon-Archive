@@ -16,7 +16,7 @@ public class Main {
 		return Integer.parseInt(next());
 	}
 	
-	static int N, minAnswer, population[];
+	static int N, minAnswer, count[];
 	static List<Integer>[] adj;
 	static boolean isSelected[], visited[];
 	
@@ -25,10 +25,10 @@ public class Main {
 		q.offer(u);
 		visited[u] = true;
 		
-		int visitedCnt = 0;
+		int count = 0;
 		while (!q.isEmpty()) {
 			int cur = q.poll();
-			visitedCnt++;
+			count++;
 			for (int next : adj[cur]) {
 				if (visited[next]) continue;
 				if (isSelected[cur] != isSelected[next]) continue;
@@ -37,7 +37,7 @@ public class Main {
 			}
 		}
 		
-		return visitedCnt;
+		return count;
 	}
 	
 	// 선거구를 나눌 수 있는지 확인
@@ -71,8 +71,8 @@ public class Main {
 	static int getDiff() {
 		int aSum = 0, bSum = 0;
 		for (int i = 1; i <= N; i++) {
-			if (isSelected[i]) aSum += population[i];
-			else bSum += population[i];
+			if (isSelected[i]) aSum += count[i];
+			else bSum += count[i];
 		}
 		return Math.abs(aSum - bSum);
 	}
@@ -94,7 +94,7 @@ public class Main {
 		br = new BufferedReader(new InputStreamReader(System.in));
 	
 		N = nextInt();
-		population = new int[N + 1]; // 1-based
+		count = new int[N + 1]; // 1-based
 		isSelected = new boolean[N + 1];  // 1-based
 		visited = new boolean[N + 1];  // 1-based
 		adj = new List[N + 1];  // 1-based
@@ -102,7 +102,7 @@ public class Main {
 			adj[i] = new ArrayList<>();
 		}
 		
-		for (int i = 1; i <= N; i++) population[i] = nextInt();
+		for (int i = 1; i <= N; i++) count[i] = nextInt();
 		
 		for (int u = 1; u <= N; u++) {
 			int m = nextInt();
@@ -113,8 +113,7 @@ public class Main {
 		}
 		
 		minAnswer = 1_000_000_000;
-		isSelected[1] = true;  // 대칭 분할(보완 탐색)
-		dfs(2);
+		dfs(1);
 		
 		minAnswer = (minAnswer == 1_000_000_000) ? -1 : minAnswer;
 		System.out.println(minAnswer);
